@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: test
+          predicates:
+            - Path=
+          uri: http://localhost:8080
+          filters:
+            #            - LocalResponseCache=10s,500MB
+            - CustomGatewayFilter
+
+    loadbalancer:
+      cache:
+        enabled: false
