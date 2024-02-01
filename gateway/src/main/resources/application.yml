@@ -7,14 +7,15 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: test
+        - id: echo-app
           predicates:
-            - Path=
-          uri: http://localhost:8080
+            - Path=/gateway/eureka/echo
+          uri: lb://echo-app:8082
           filters:
-            #            - LocalResponseCache=10s,500MB
-            - CustomGatewayFilter
-
-    loadbalancer:
-      cache:
-        enabled: false
+            - RewritePath=/gateway/eureka/echo, /echo
+        - id: echo-app
+          predicates:
+            - Path=/new/eureka/echo
+          uri: lb://new-id:8082
+          filters:
+            - RewritePath=/new/eureka/echo, /echo

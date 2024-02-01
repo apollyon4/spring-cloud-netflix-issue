@@ -36,7 +36,7 @@ public class MyLoadBalancer implements ReactorServiceInstanceLoadBalancer {
         return Mono.just(new Response<ServiceInstance>() {
             @Override
             public boolean hasServer() {
-                return false;
+                return true;
             }
 
             @Override

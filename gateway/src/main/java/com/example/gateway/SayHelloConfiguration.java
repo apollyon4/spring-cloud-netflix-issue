@@ -2,9 +2,12 @@ package com.example.gateway;
 
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.loadbalancer.core.ReactorLoadBalancer;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
+import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
 import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
@@ -12,10 +15,13 @@ import java.util.List;
 
 public class SayHelloConfiguration {
 
-    @Bean
     @Primary
-    ServiceInstanceListSupplier serviceInstanceListSupplier() {
-        return new DemoServiceInstanceListSuppler("echo-app");
+    @Bean
+    public ReactorLoadBalancer<ServiceInstance> reactorServiceInstanceLoadBalancer(Environment environment,
+                                                                                   LoadBalancerClientFactory loadBalancerClientFactory) {
+        String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
+        return new MyLoadBalancer(
+                loadBalancerClientFactory.getLazyProvider(name, ServiceInstanceListSupplier.class), name);
     }
 }
 
